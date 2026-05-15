@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Optimum Video</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+
+<header class="hero" th:style="'background-image: linear-gradient(90deg, rgba(0,0,0,.92), rgba(0,0,0,.48), rgba(0,0,0,.14)), url(' + ${hero.backdropUrl} + ')'">
+    <div class="hero-content">
+        <p class="eyebrow" th:text="#{hero.original}">Optimum Original</p>
+        <h1 th:text="${hero.title}">Nuit Rouge</h1>
+        <p class="meta"><span th:text="${hero.releaseYear}">2026</span> · <span th:text="${hero.maturityRating}">PG13</span> · <span th:text="${hero.rating}">9.1</span>/10</p>
+        <p class="synopsis" th:text="${hero.synopsis}">Synopsis</p>
+        <div class="hero-actions">
+            <a class="primary-action" th:href="@{/titles/{id}(id=${hero.id})}">▶ Lire</a>
+            <a class="secondary-action" th:href="@{/titles/{id}(id=${hero.id})}">Détails</a>
+        </div>
+    </div>
+</header>
+
+<main class="page">
+    <section class="profile-strip">
+        <h2 th:text="#{home.who}">Qui regarde ?</h2>
+        <p class="muted" th:text="#{app.description}">Description</p>
+        <div class="profiles-inline">
+            <a class="profile-chip" th:each="profile : ${profiles}" href="/profiles-ui">
+                <img th:src="${profile.avatarUrl}" th:alt="${profile.name}">
+                <span th:text="${profile.name}">Profil</span>
+            </a>
+        </div>
+    </section>
+
+    <section class="rail" th:if="${!continueWatching.isEmpty()}">
+        <div class="section-title">
+            <h2 th:text="#{home.continue}">Continuer à regarder</h2>
+            <a href="/api/recommendations/continue-watching">JSON</a>
+        </div>
+        <div class="progress-grid">
+            <article class="continue-card" th:each="item : ${continueWatching}">
+                <a th:href="@{/titles/{id}(id=${item.title.id})}">
+                    <img th:src="${item.title.backdropUrl}" th:alt="${item.title.title}">
+                    <div class="continue-copy">
+                        <strong th:text="${item.title.title}">Titre</strong>
+                        <span th:text="${item.progressPercent + '% vu'}">45% vu</span>
+                    </div>
+                    <div class="bar"><span th:style="'width:' + ${item.progressPercent} + '%'"></span></div>
+                </a>
+            </article>
+        </div>
+    </section>
+
+    <section class="rail">
+        <div class="section-title">
+            <h2 th:text="#{home.trending}">Tendances</h2>
+            <a href="/api/recommendations/trending">API</a>
+        </div>
+        <div class="poster-row">
+            <article class="poster-card" th:each="title : ${trending}">
+                <div style="position:relative">
+                    <a th:href="@{/titles/{id}(id=${title.id})}">
+                        <img th:src="${title.posterUrl}" th:alt="${title.title}">
+                        <strong th:text="${title.title}">Titre</strong>
+                        <span th:text="${title.releaseYear + ' · ' + title.rating + '/10'}">2026 · 9.1/10</span>
+                    </a>
+                    <button class="card-watchlist-btn" th:data-watchlist-toggle="${title.id}" 
+                            style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.5); border:none; color:white; border-radius:50%; width:30px; height:30px; cursor:pointer">+</button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="rail">
+        <div class="section-title">
+            <h2 th:text="#{home.originals}">Optimum Originals</h2>
+            <a href="/api/recommendations/personalized">Rangées</a>
+        </div>
+        <div class="wide-row">
+            <article class="wide-card" th:each="title : ${originals}">
+                <div style="position:relative">
+                    <a th:href="@{/titles/{id}(id=${title.id})}">
+                        <img th:src="${title.backdropUrl}" th:alt="${title.title}">
+                        <div>
+                            <span>Original</span>
+                            <strong th:text="${title.title}">Titre</strong>
+                        </div>
+                    </a>
+                    <button class="card-watchlist-btn" th:data-watchlist-toggle="${title.id}" 
+                            style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.5); border:none; color:white; border-radius:50%; width:30px; height:30px; cursor:pointer">+</button>
+                </div>
+            </article>
+        </div>
+    </section>
+
+    <section class="rail">
+        <div class="section-title">
+            <h2 th:text="#{home.new}">Nouveautés</h2>
+            <a href="/search-ui">Explorer</a>
+        </div>
+        <div class="poster-row">
+            <article class="poster-card" th:each="title : ${newReleases}">
+                <div style="position:relative">
+                    <a th:href="@{/titles/{id}(id=${title.id})}">
+                        <img th:src="${title.posterUrl}" th:alt="${title.title}">
+                        <strong th:text="${title.title}">Titre</strong>
+                        <span th:text="${title.type}">MOVIE</span>
+                    </a>
+                    <button class="card-watchlist-btn" th:data-watchlist-toggle="${title.id}" 
+                            style="position:absolute; top:10px; right:10px; background:rgba(0,0,0,0.5); border:none; color:white; border-radius:50%; width:30px; height:30px; cursor:pointer">+</button>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="/js/app.js"></script>
+</body>
+</html>

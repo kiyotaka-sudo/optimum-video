@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profils · Optimum Video</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main class="page page-offset compact-page">
+    <h1>Profils</h1>
+    <div class="profile-grid">
+        <article class="profile-card" th:each="profile : ${profiles}">
+            <img th:src="${profile.avatarUrl}" th:alt="${profile.name}">
+            <h2 th:text="${profile.name}">Profil</h2>
+            <p th:text="${profile.kid ? 'Enfant · ' + profile.maturityRating : 'Adulte · ' + profile.maturityRating}">Adulte</p>
+        </article>
+    </div>
+    <form class="create-profile" id="profileForm">
+        <input name="name" placeholder="Nouveau profil">
+        <label><input type="checkbox" name="isKid"> Enfant</label>
+        <button class="primary-action" type="submit">Créer</button>
+    </form>
+    <pre id="profileResult" class="api-result"></pre>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="/js/app.js"></script>
+</body>
+</html>

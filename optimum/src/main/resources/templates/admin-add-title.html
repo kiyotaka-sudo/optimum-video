@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter un Titre · Admin Optimum Video</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+        .admin-form-container { max-width: 800px; margin: 40px auto; background: var(--panel); padding: 30px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #aaa; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group textarea, .form-group select { width: 100%; padding: 12px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 4px; }
+        .form-group input[type="file"] { display: block; width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-form-container">
+    <a href="/admin" style="color: var(--accent); margin-bottom: 20px; display: inline-block;">← Retour au Dashboard</a>
+    <h1 style="margin-top: 0;">Ajouter un Titre</h1>
+
+    <form action="/admin/titles/new" method="post" enctype="multipart/form-data">
+        <div class="form-group">
+            <label>Titre</label>
+            <input type="text" name="title" required>
+        </div>
+
+        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <label>Type de contenu</label>
+                <select name="type" id="contentType" required onchange="toggleVideoUpload()">
+                    <option value="MOVIE">Film</option>
+                    <option value="SERIES">Série</option>
+                </select>
+            </div>
+            <div>
+                <label>Année de sortie</label>
+                <input type="number" name="releaseYear" value="2026" required>
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label style="display: flex; align-items: center; gap: 10px;">
+                <input type="checkbox" name="isAfricanContent" value="true">
+                Il s'agit de Contenu Africain
+            </label>
+        </div>
+
+        <div class="form-group">
+            <label>Synopsis</label>
+            <textarea name="synopsis" rows="4" required></textarea>
+        </div>
+
+        <div class="form-group" style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+            <div>
+                <label>Affiche (Format Portrait .jpg/.png)</label>
+                <input type="file" name="poster" accept="image/*" required>
+            </div>
+            <div>
+                <label>Image de fond (Format Paysage .jpg/.png)</label>
+                <input type="file" name="backdrop" accept="image/*" required>
+            </div>
+        </div>
+
+        <div class="form-group" id="videoUploadGroup">
+            <label>Fichier Vidéo (.mp4) <span style="color:#aaa; font-size:0.8rem;">(Si c'est un film)</span></label>
+            <input type="file" name="video" accept="video/mp4">
+        </div>
+
+        <button type="submit" class="primary-action" style="width: 100%; margin-top: 20px;">Créer le Titre</button>
+    </form>
+</div>
+
+<script>
+    function toggleVideoUpload() {
+        const type = document.getElementById('contentType').value;
+        const videoGroup = document.getElementById('videoUploadGroup');
+        if (type === 'SERIES') {
+            videoGroup.style.display = 'none';
+        } else {
+            videoGroup.style.display = 'block';
+        }
+    }
+</script>
+
+</body>
+</html>

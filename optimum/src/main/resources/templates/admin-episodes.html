@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gérer les Épisodes · Admin Optimum Video</title>
+    <link rel="stylesheet" href="/css/app.css">
+    <style>
+        .admin-container { max-width: 1000px; margin: 40px auto; }
+        .series-header { display: flex; gap: 20px; background: var(--panel); padding: 20px; border-radius: 8px; margin-bottom: 30px; }
+        .series-header img { width: 100px; border-radius: 6px; }
+        
+        .episodes-list { display: grid; gap: 15px; margin-bottom: 40px; }
+        .episode-card { background: var(--panel); padding: 15px; border-radius: 6px; display: flex; gap: 15px; align-items: center; border: 1px solid rgba(255,255,255,0.05); }
+        .episode-card img { width: 150px; border-radius: 4px; aspect-ratio: 16/9; object-fit: cover; }
+        .episode-info { flex: 1; }
+        .episode-info h3 { margin: 0 0 5px 0; }
+        .episode-info p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+        
+        .add-episode-form { background: var(--panel); padding: 20px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.05); }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; color: #aaa; font-size: 0.9rem; }
+        .form-group input[type="text"], .form-group input[type="number"], .form-group textarea { width: 100%; padding: 10px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: #fff; border-radius: 4px; }
+        .form-group input[type="file"] { display: block; width: 100%; padding: 10px; background: rgba(255,255,255,0.05); border: 1px dashed rgba(255,255,255,0.2); border-radius: 4px; }
+    </style>
+</head>
+<body>
+
+<div class="admin-container">
+    <a href="/admin" style="color: var(--accent); margin-bottom: 20px; display: inline-block;">← Retour au Dashboard</a>
+    
+    <div class="series-header">
+        <img th:src="${series.posterUrl}">
+        <div>
+            <h1 style="margin: 0 0 10px 0;" th:text="${series.title}">Titre de la Série</h1>
+            <p style="margin: 0; color: #aaa;" th:text="${series.synopsis}">Synopsis de la série</p>
+        </div>
+    </div>
+
+    <h2>Épisodes existants</h2>
+    <div class="episodes-list">
+        <div th:if="${episodes.isEmpty()}" style="color: #aaa;">Aucun épisode pour le moment.</div>
+        
+        <div th:each="episode : ${episodes}" class="episode-card">
+            <img th:src="${episode.thumbnailUrl}">
+            <div class="episode-info">
+                <div style="color: var(--accent); font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">Saison <span th:text="${episode.seasonNumber}">1</span> • Épisode <span th:text="${episode.episodeNumber}">1</span></div>
+                <h3 th:text="${episode.title}">Titre de l'épisode</h3>
+                <p th:text="${episode.synopsis}">Synopsis</p>
+            </div>
+            <div>
+                <span th:if="${episode.videoUrl != null}" style="color: #38d26f; font-size: 0.8rem;">Vidéo Uploadée ✓</span>
+                <span th:unless="${episode.videoUrl != null}" style="color: #e50914; font-size: 0.8rem;">Vidéo Manquante ✗</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="add-episode-form">
+        <h2>+ Ajouter un Nouvel Épisode</h2>
+        <form th:action="@{/admin/titles/{id}/episodes/new(id=${series.id})}" method="post" enctype="multipart/form-data">
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Saison n°</label>
+                    <input type="number" name="seasonNumber" required min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Épisode n°</label>
+                    <input type="number" name="episodeNumber" required min="1" value="1">
+                </div>
+                <div class="form-group">
+                    <label>Durée (minutes)</label>
+                    <input type="number" name="durationMinutes" required value="45">
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Titre de l'épisode</label>
+                <input type="text" name="title" required>
+            </div>
+
+            <div class="form-group">
+                <label>Synopsis</label>
+                <textarea name="synopsis" rows="3" required></textarea>
+            </div>
+
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="form-group">
+                    <label>Miniature (Format Paysage 16:9)</label>
+                    <input type="file" name="thumbnail" accept="image/*" required>
+                </div>
+                <div class="form-group">
+                    <label>Fichier Vidéo (.mp4)</label>
+                    <input type="file" name="video" accept="video/mp4" required>
+                </div>
+            </div>
+
+            <button type="submit" class="primary-action" style="margin-top: 10px;">Enregistrer l'épisode</button>
+        </form>
+    </div>
+</div>
+
+</body>
+</html>

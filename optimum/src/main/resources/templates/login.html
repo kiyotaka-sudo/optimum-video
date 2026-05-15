@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion · Optimum Video</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+    <a class="brand" href="/">Optimum<span>Video</span></a>
+    <form class="auth-card" method="post" action="/login">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+        <h1>Connexion</h1>
+        <p th:if="${param.error}" class="form-error">Identifiants invalides.</p>
+        <p th:if="${param.logout}" class="form-success">Déconnexion réussie.</p>
+        <p th:if="${param.registered}" class="form-success">Compte créé. Connectez-vous.</p>
+        <label>Email ou username</label>
+        <input name="email" type="text" autocomplete="username" required>
+        <label>Mot de passe</label>
+        <input name="password" type="password" autocomplete="current-password" required>
+        <button class="primary-action" type="submit">Se connecter</button>
+        <a class="auth-link" href="/register">Créer un compte</a>
+        <div class="demo-box">
+            <strong>Admin</strong>
+            <span>Username: MBARGA ERNEST</span>
+            <span>Email: mbargaernest80@gmail.com</span>
+        </div>
+    </form>
+</main>
+</body>
+</html>

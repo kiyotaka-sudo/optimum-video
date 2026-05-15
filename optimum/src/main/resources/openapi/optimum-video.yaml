@@ -1,0 +1,58 @@
+openapi: "3.1.0"
+info:
+  title: Optimum Video API
+  version: "2.0.0"
+  description: API Spring Boot pour une plateforme de streaming vidéo style Prime Video avec identité visuelle Netflix.
+servers:
+  - url: "http://localhost:9092/api"
+tags:
+  - name: Auth
+  - name: Profiles
+  - name: Catalog
+  - name: Playback
+  - name: Recommendations
+  - name: Subscriptions
+paths:
+  /auth/register:
+    post:
+      tags: [Auth]
+      summary: Créer un compte et retourner des tokens demo.
+  /auth/login:
+    post:
+      tags: [Auth]
+      summary: Connexion demo.
+  /profiles:
+    get:
+      tags: [Profiles]
+      summary: Lister les profils du compte demo.
+    post:
+      tags: [Profiles]
+      summary: Créer un profil.
+  /titles:
+    get:
+      tags: [Catalog]
+      summary: Lister et filtrer le catalogue.
+  /titles/{titleId}:
+    get:
+      tags: [Catalog]
+      summary: Détail complet d'un titre.
+  /search:
+    get:
+      tags: [Search]
+      summary: Recherche full-text.
+  /playback/sessions:
+    post:
+      tags: [Playback]
+      summary: Créer une session de lecture.
+  /playback/progress:
+    put:
+      tags: [Playback]
+      summary: Sauvegarder la progression.
+  /recommendations/trending:
+    get:
+      tags: [Recommendations]
+      summary: Titres tendances.
+  /subscriptions/plans:
+    get:
+      tags: [Subscriptions]
+      summary: Plans d'abonnement.

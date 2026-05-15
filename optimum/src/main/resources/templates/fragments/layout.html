@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<body>
+<nav class="topbar" th:fragment="nav">
+    <a class="brand" href="/">Optimum<span>Video</span></a>
+    <div class="nav-links">
+        <a href="/" th:text="#{nav.home}">Accueil</a>
+        <a href="/search-ui" th:text="#{nav.catalog}">Catalogue</a>
+        <a href="/profiles-ui" th:text="#{nav.profiles}">Profils</a>
+        <a href="/watchlist">Ma Liste</a>
+        <a href="/plans" th:text="#{nav.plans}">Abonnements</a>
+        <a href="/admin" sec:authorize="hasRole('ADMIN')" th:text="#{nav.admin}">Admin</a>
+        <a href="/api/titles">API</a>
+    </div>
+    <div class="nav-tools">
+        <a class="tool-button" href="?lang=fr">FR</a>
+        <a class="tool-button" href="?lang=en">EN</a>
+        <button class="tool-button" id="themeToggle" type="button">Prime</button>
+        <form method="post" action="/logout">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+            <button class="tool-button" type="submit" th:text="#{nav.logout}">Déconnexion</button>
+        </form>
+    </div>
+    <form class="nav-search" action="/search-ui" method="get">
+        <input name="q" id="globalSearch" type="search" th:placeholder="#{nav.search}" autocomplete="off">
+        <button type="submit">⌕</button>
+        <div id="suggestions" class="suggestions" aria-live="polite"></div>
+    </form>
+</nav>
+
+<footer class="footer" th:fragment="footer">
+    <p>Optimum Video · Spring Boot · Thymeleaf · AJAX · API REST inspirée OpenAPI 3.1</p>
+</footer>
+</body>
+</html>

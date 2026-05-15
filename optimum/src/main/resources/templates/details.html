@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title th:text="${title.title + ' · Optimum Video'}">Optimum Video</title>
+    <link rel="stylesheet" href="/css/app.css">
+</head>
+<body>
+<div th:replace="~{fragments/layout :: nav}"></div>
+<main>
+    <section class="detail-hero" th:style="'background-image: linear-gradient(90deg, #050505 0%, rgba(5,5,5,.82) 38%, rgba(5,5,5,.18)), url(' + ${title.backdropUrl} + ')'">
+        <div class="detail-copy">
+            <p class="eyebrow" th:text="${title.optimumOriginal ? 'Optimum Original' : title.type}">Film</p>
+            <h1 th:text="${title.title}">Titre</h1>
+            <p class="meta"><span th:text="${title.releaseYear}">2026</span> · <span th:text="${title.maturityRating}">PG13</span> · <span th:text="${title.rating}">8.8</span>/10</p>
+            <p th:text="${title.synopsis}">Synopsis</p>
+            <div class="genres">
+                <span th:each="genre : ${title.genres}" th:text="${genre.name}">Genre</span>
+            </div>
+            <div class="hero-actions">
+                <button class="primary-action" id="watchButton" th:data-title-id="${title.id}" th:data-profile-id="${profile.id}">▶ Démarrer une session</button>
+                <button class="secondary-action" th:data-watchlist-toggle="${title.id}">+ Ma Liste</button>
+            </div>
+            <pre id="sessionResult" class="api-result"></pre>
+        </div>
+    </section>
+
+    <section class="page detail-section">
+        <h2>Casting</h2>
+        <div class="cast-list">
+            <span th:each="person : ${title.cast}" th:text="${person}">Acteur</span>
+        </div>
+    </section>
+
+    <section class="page detail-section" th:if="${!episodes.isEmpty()}">
+        <h2>Épisodes</h2>
+        <div class="episode-list">
+            <article th:each="episode : ${episodes}">
+                <img th:src="${episode.thumbnailUrl}" th:alt="${episode.title}">
+                <div>
+                    <strong th:text="${episode.episodeNumber + '. ' + episode.title}">Episode</strong>
+                    <p th:text="${episode.synopsis}">Synopsis</p>
+                    <span th:text="${episode.durationMinutes + ' min'}">48 min</span>
+                </div>
+            </article>
+        </div>
+    </section>
+</main>
+<div th:replace="~{fragments/layout :: footer}"></div>
+<script src="/js/app.js"></script>
+</body>
+</html>
