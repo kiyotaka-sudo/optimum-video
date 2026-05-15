@@ -22,10 +22,11 @@ public class DatabaseUserDetailsService implements UserDetailsService {
         UserAccount account = accounts.findByEmail(login.toLowerCase())
                 .or(() -> accounts.findByUsername(login))
                 .orElseThrow(() -> new UsernameNotFoundException("Utilisateur introuvable"));
-        return new User(
-                account.getEmail(),
-                account.getPasswordHash(),
-                java.util.List.of(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()))
-        );
+        return User.builder()
+                .username(account.getEmail())
+                .password(account.getPasswordHash())
+                .authorities(new SimpleGrantedAuthority("ROLE_" + account.getRole().name()))
+                .accountLocked(!account.isActive())  // bloque les comptes suspendus
+                .build();
     }
 }

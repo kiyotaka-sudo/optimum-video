@@ -1,20 +1,12 @@
 package com.optimum.optimum.controller;
 
-import com.optimum.optimum.dto.AuthDtos.RegisterRequest;
-import com.optimum.optimum.service.AuthService;
-import com.optimum.optimum.service.CatalogService;
-import com.optimum.optimum.service.PlaybackService;
-import com.optimum.optimum.service.PasswordPolicy;
-import com.optimum.optimum.service.ProfileService;
-import com.optimum.optimum.service.SubscriptionService;
+import com.optimum.optimum.service.*;
+import com.optimum.optimum.repository.SubscriptionPlanRepository;
 import java.security.Principal;
 import java.util.UUID;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @Controller
 public class WebController {
@@ -24,12 +16,15 @@ public class WebController {
     private final SubscriptionService subscriptionService;
     private final AuthService authService;
     private final PasswordPolicy passwordPolicy;
-
+    private final AdminUserService adminUserService;
+    private final SubscriptionPlanRepository planRepository;
     private final com.optimum.optimum.repository.UserAccountRepository accountRepository;
 
     public WebController(CatalogService catalogService, PlaybackService playbackService,
                          ProfileService profileService, SubscriptionService subscriptionService,
                          AuthService authService, PasswordPolicy passwordPolicy,
+                         AdminUserService adminUserService,
+                         SubscriptionPlanRepository planRepository,
                          com.optimum.optimum.repository.UserAccountRepository accountRepository) {
         this.catalogService = catalogService;
         this.playbackService = playbackService;
@@ -37,13 +32,13 @@ public class WebController {
         this.subscriptionService = subscriptionService;
         this.authService = authService;
         this.passwordPolicy = passwordPolicy;
+        this.adminUserService = adminUserService;
+        this.planRepository = planRepository;
         this.accountRepository = accountRepository;
     }
 
     @GetMapping("/login")
-    String login() {
-        return "login";
-    }
+    String login() { return "login"; }
 
     @GetMapping("/register")
     String register(Model model) {
@@ -62,7 +57,7 @@ public class WebController {
             model.addAttribute("errors", errors);
             return "register";
         }
-        authService.register(new RegisterRequest(email, password, firstName, lastName));
+        authService.register(new com.optimum.optimum.dto.AuthDtos.RegisterRequest(email, password, firstName, lastName));
         return "redirect:/login?registered";
     }
 
@@ -80,10 +75,12 @@ public class WebController {
     @GetMapping("/admin")
     String admin(Model model, Principal principal) {
         model.addAttribute("email", principal == null ? "" : principal.getName());
-        model.addAttribute("titles", catalogService.trending());
-        model.addAttribute("allTitles", catalogService.listTitles(null, null, "")); // Fetch all titles for admin
+        model.addAttribute("allTitles", catalogService.listTitles(null, null, ""));
         model.addAttribute("plans", subscriptionService.listPlans());
-        model.addAttribute("users", accountRepository.findAll());
+        model.addAttribute("users", adminUserService.listAll());
+        model.addAttribute("userCount", accountRepository.count());
+        model.addAttribute("titleCount", catalogService.listTitles(null, null, "").size());
+        model.addAttribute("planCount", planRepository.count());
         return "admin";
     }
 

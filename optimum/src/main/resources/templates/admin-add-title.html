@@ -65,9 +65,17 @@
         <div class="form-group" id="videoUploadGroup">
             <label>Fichier Vidéo (.mp4) <span style="color:#aaa; font-size:0.8rem;">(Si c'est un film)</span></label>
             <input type="file" name="video" accept="video/mp4">
+            <div style="margin-top:6px; font-size:0.8rem; color:#888;">⚠️ L'upload d'une vidéo peut prendre du temps. Ne quittez pas la page.</div>
         </div>
 
-        <button type="submit" class="primary-action" style="width: 100%; margin-top: 20px;">Créer le Titre</button>
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+        <button type="submit" id="submitBtn" class="primary-action" style="width: 100%; margin-top: 20px;" onclick="showLoading()">
+            Créer le Titre
+        </button>
+        <div id="loadingMsg" style="display:none; text-align:center; margin-top:15px; color:#aaa;">
+            ⏳ Envoi en cours... Veuillez patienter.
+        </div>
     </form>
 </div>
 
@@ -80,6 +88,11 @@
         } else {
             videoGroup.style.display = 'block';
         }
+    }
+
+    function showLoading() {
+        document.getElementById('submitBtn').disabled = true;
+        document.getElementById('loadingMsg').style.display = 'block';
     }
 </script>
 
